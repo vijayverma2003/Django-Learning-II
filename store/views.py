@@ -16,8 +16,8 @@ def product_list(request):
     elif request.method == 'POST':
         serializer = ProductSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.validated_data
-        return Response('ok')
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         # if serializer.is_valid():
         #     serializer.validated_data
@@ -26,11 +26,17 @@ def product_list(request):
         #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view()
+@api_view(['GET', 'PUT'])
 def product_detail(request, id):
     product = get_object_or_404(Product, pk=id)
-    serializer = ProductSerializer(product)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = ProductSerializer(product, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 @api_view()
@@ -38,3 +44,12 @@ def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
     serializer = CollectionSerializer(collection)
     return Response(serializer.data)
+
+
+# {
+#     "title": "Black Shirt",
+#     "slug": "black-shirt",
+#     "unit_price": 29.99,
+#     "collection": 11,
+#     "inventory": 1
+# }
