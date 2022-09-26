@@ -1,11 +1,17 @@
-from django.urls import path
+from cgitb import lookup
+from rest_framework_nested import routers
 from . import views
 
+
+router = routers.DefaultRouter()
+router.register('products', views.ProductViewSet)
+router.register('collections', views.ColletionViewSet)
+
+products_routers = routers.NestedDefaultRouter(
+    router, 'products', lookup='product')
+
+products_routers.register('reviews', views.ReviewViewSet, 'product-reviews')
+
+
 # URLConf
-urlpatterns = [
-    path('products/', views.ProductList.as_view()),
-    path('products/<int:pk>/', views.ProductDetail.as_view()),
-    path('collections/', views.CollectionList.as_view()),
-    path('collections/<int:pk>/', views.CollectionDetail.as_view(),
-         name='collection-detail'),
-]
+urlpatterns = router.urls + products_routers.urls
