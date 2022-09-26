@@ -1,4 +1,5 @@
 from decimal import Decimal
+from pyexpat import model
 from rest_framework import serializers
 from store.models import Collection, Product
 
@@ -8,7 +9,7 @@ class CollectionSerializer(serializers.ModelSerializer):
         model = Collection
         fields = ['id', 'title', 'products_count']
 
-    products_count = serializers.IntegerField()
+    products_count = serializers.IntegerField(read_only=True)
 
 
 class ProductSerializer(serializers.ModelSerializer):
