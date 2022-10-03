@@ -1,7 +1,7 @@
 from decimal import Decimal
 from pyexpat import model
 from rest_framework import serializers
-from store.models import Cart, CartItem, Collection, Product, Review
+from store.models import Cart, CartItem, Collection, Customer, Product, Review
 from django.db.models import Count, Sum
 from django.db.models import F
 
@@ -109,3 +109,11 @@ class CartSerializer(serializers.ModelSerializer):
 
     def calculate_total(self, cart):
         return sum([item.quantity * item.product.unit_price for item in cart.items.all()])
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
+    class Meta:
+        model = Customer
+        fields = ['id', 'user_id', 'phone', 'birth_date', 'membership']
